@@ -215,15 +215,16 @@ def _read_flac_tags(filepath: str) -> AudioFileInfo:
         for field_name, vorbis_key in _VORBIS_MAP.items():
             values = audio.tags.get(vorbis_key, [])
             if values:
-                info.tags[field_name] = values[0]
+                info.tags[field_name] = str(values[0])
 
-        # Extra-Tags
-        known_keys = set(v.upper() for v in _VORBIS_MAP.values())
-        for key in audio.tags:
+        # Extra-Tags — .keys() verwenden, da VComment intern eine Liste von
+        # (key, value)-Paaren ist; direktes Iterieren kann Tupel liefern.
+        known_keys = {v.upper() for v in _VORBIS_MAP.values()}
+        for key in audio.tags.keys():
             if key.upper() not in known_keys:
-                values = audio.tags[key]
+                values = audio.tags.get(key, [])
                 if values:
-                    info.extra_tags[key] = values[0]
+                    info.extra_tags[key] = str(values[0])
 
     # Cover-Art
     if audio.pictures:
