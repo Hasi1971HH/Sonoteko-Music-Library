@@ -4,6 +4,7 @@
 import sys
 from pathlib import Path
 import PyQt6 as _pyqt6
+from PyInstaller.utils.hooks import collect_submodules
 
 block_cipher = None
 
@@ -25,25 +26,21 @@ a = Analysis(
         ('qt.conf', '.'),
         ('assets/icon.svg', 'assets'),
     ],
-    hiddenimports=[
-        'mutagen',
-        'mutagen.mp3',
-        'mutagen.flac',
-        'mutagen.flac',
-        'mutagen.id3',
-        'mutagen.id3._frames',
-        'mutagen.oggvorbis',
-        'mutagen.mp4',
-        'PIL',
-        'PIL.Image',
-        'requests',
-        'PyQt6.QtMultimedia',
-        'PyQt6.QtMultimediaWidgets',
-        'xml.etree.ElementTree',
-        'xml.dom.minidom',
-        'sqlite3',
-        'json',
-    ],
+    hiddenimports=(
+        collect_submodules('sonoteko') +
+        collect_submodules('mutagen') +
+        [
+            'PIL',
+            'PIL.Image',
+            'requests',
+            'PyQt6.QtMultimedia',
+            'PyQt6.QtMultimediaWidgets',
+            'xml.etree.ElementTree',
+            'xml.dom.minidom',
+            'sqlite3',
+            'json',
+        ]
+    ),
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
