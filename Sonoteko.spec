@@ -66,7 +66,7 @@ exe = EXE(
     strip=False,
     upx=False,
     console=False,
-    target_arch='universal2',
+    target_arch=None,
 )
 
 coll = COLLECT(
