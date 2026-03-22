@@ -1,8 +1,9 @@
-name: macOS App bauen
+name: Sonoteko macOS App bauen
 
 on:
   push:
     tags:
+      - 'V*'
       - 'v*'
   workflow_dispatch:
 
@@ -29,22 +30,22 @@ jobs:
 
       - name: App bauen
         run: |
-          pyinstaller HasisTagEditor.spec
+          pyinstaller Sonoteko.spec
 
       - name: ZIP erstellen
         run: |
           cd dist
-          zip -r "../Hasis-ID3-Tag-Editor-macOS.zip" "Hasi's ID3-Tag-Editor.app"
+          zip -r "../Sonoteko-macOS.zip" "Sonoteko.app"
 
       - name: ZIP als Artefakt hochladen
         uses: actions/upload-artifact@v4
         with:
-          name: Hasis-ID3-Tag-Editor-macOS
-          path: Hasis-ID3-Tag-Editor-macOS.zip
+          name: Sonoteko-macOS
+          path: Sonoteko-macOS.zip
 
       - name: Release erstellen (bei Tag)
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
-          files: Hasis-ID3-Tag-Editor-macOS.zip
+          files: Sonoteko-macOS.zip
           generate_release_notes: true
