@@ -1,3 +1,5 @@
-PyQt6>=6.5.0
+# 6.7.2 is the minimum that ships QT_QPA_NO_BUNDLE_LOOKUP, which prevents the
+# CFBundleGetMainBundle() PAC-signature crash on macOS 15+ / 26.x.
+PyQt6>=6.7.2
 mutagen>=1.47.0
 Pillow>=10.0.0

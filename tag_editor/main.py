@@ -1,6 +1,40 @@
 """Einstiegspunkt für Hasi's ID3-Tag-Editor."""
 
 import sys
+import os
+
+# macOS crash prevention: on macOS 15+ / 26.x CoreFoundation uses PAC-signed
+# CFInfo structures.  Qt's static initialiser in QtCore.abi3.so calls
+# CFBundleCopyBundleURL(CFBundleGetMainBundle()) during QLoggingRegistry
+# setup – before any user code runs.  When the returned CFBundleRef carries a
+# PAC signature that the current OS rejects, the process crashes at address
+# 0x8 (SIGSEGV / KERN_INVALID_ADDRESS).
+#
+# Two-pronged workaround (both must be set *before* the first PyQt6 import):
+#   1. QT_QPA_NO_BUNDLE_LOOKUP=1  – Qt 6.7.2+ skips CFBundleGetMainBundle()
+#      entirely when this is set.
+#   2. QT_PLUGIN_PATH               – lets Qt locate its plugins without
+#      falling back to the CFBundle lookup for older Qt builds.
+if sys.platform == "darwin" and getattr(sys, "frozen", False):
+    os.environ.setdefault("QT_QPA_NO_BUNDLE_LOOKUP", "1")
+
+    _exe_dir = os.path.dirname(os.path.abspath(sys.executable))
+    for _candidate in (
+        # PyInstaller 6.x  (_internal sub-directory layout)
+        os.path.join(_exe_dir, "_internal", "PyQt6", "Qt6", "plugins"),
+        # PyInstaller 5.x  (everything next to the executable)
+        os.path.join(_exe_dir, "PyQt6", "Qt6", "plugins"),
+        # Alternative Qt path name used by some wheels
+        os.path.join(_exe_dir, "PyQt6", "Qt", "plugins"),
+        # .app bundle: Contents/Frameworks/PyQt6/…
+        os.path.normpath(
+            os.path.join(_exe_dir, "..", "Frameworks", "PyQt6", "Qt6", "plugins")
+        ),
+    ):
+        if os.path.isdir(_candidate):
+            os.environ.setdefault("QT_PLUGIN_PATH", _candidate)
+            break
+
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import Qt
 
