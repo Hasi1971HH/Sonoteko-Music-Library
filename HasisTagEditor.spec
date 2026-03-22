@@ -10,7 +10,12 @@ a = Analysis(
     ['tag_editor/main.py'],
     pathex=[],
     binaries=[],
-    datas=[],
+    # qt.conf must land *next to the executable* (destination '.') so that Qt
+    # finds it before it falls back to CFBundleGetMainBundle().  That CFBundle
+    # call crashes on macOS 15+ / 26.x due to PAC-protected CoreFoundation
+    # objects.  Providing qt.conf here is the version-independent safeguard;
+    # the QT_QPA_NO_BUNDLE_LOOKUP env-var set in main.py covers Qt 6.7.2+.
+    datas=[('qt.conf', '.')],
     hiddenimports=[
         'mutagen',
         'mutagen.mp3',
