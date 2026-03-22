@@ -30,7 +30,7 @@ jobs:
 
       - name: App bauen
         run: |
-          pyinstaller Sonoteko.spec
+          pyinstaller --target-arch arm64 Sonoteko.spec
 
       - name: ZIP erstellen
         run: |
