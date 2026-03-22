@@ -1,10 +1,10 @@
 #!/bin/bash
-# Lokales Build-Skript für Hasi's ID3-Tag-Editor
-# Erzeugt eine standalone .app im dist/ Ordner
+# Build-Skript für Sonoteko
+# Erzeugt eine standalone macOS .app im dist/ Ordner
 
 set -e
 
-echo "=== Hasi's ID3-Tag-Editor — Build ==="
+echo "=== Sonoteko — Build ==="
 echo ""
 
 # Virtuelle Umgebung prüfen/erstellen
@@ -20,16 +20,16 @@ echo "→ Installiere Abhängigkeiten..."
 pip install -r requirements.txt pyinstaller --quiet
 
 echo "→ Baue App..."
-pyinstaller HasisTagEditor.spec --noconfirm
+pyinstaller Sonoteko.spec --noconfirm
 
 echo "→ Erstelle ZIP..."
 cd dist
-zip -r "../Hasis-ID3-Tag-Editor-macOS.zip" "Hasi's ID3-Tag-Editor.app"
+zip -r "../Sonoteko-macOS.zip" "Sonoteko.app"
 cd ..
 
 echo ""
 echo "=== Fertig! ==="
-echo "App:  dist/Hasi's ID3-Tag-Editor.app"
-echo "ZIP:  Hasis-ID3-Tag-Editor-macOS.zip"
+echo "App:  dist/Sonoteko.app"
+echo "ZIP:  Sonoteko-macOS.zip"
 echo ""
-echo "Zum Starten: open \"dist/Hasi's ID3-Tag-Editor.app\""
+echo "Zum Starten: open dist/Sonoteko.app"

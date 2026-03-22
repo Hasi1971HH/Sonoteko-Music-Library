@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#16213e;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="folderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f3460;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0a2a4a;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="waveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#e94560;stop-opacity:0.6" />
+      <stop offset="40%" style="stop-color:#e94560;stop-opacity:1" />
+      <stop offset="60%" style="stop-color:#ff6b9d;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ff6b9d;stop-opacity:0.6" />
+    </linearGradient>
+    <linearGradient id="tabGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1a5276;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0f3460;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <clipPath id="folderClip">
+      <path d="M 120 340 L 120 820 Q 120 860 160 860 L 864 860 Q 904 860 904 820 L 904 380 Q 904 340 864 340 Z"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background rounded rect -->
+  <rect width="1024" height="1024" rx="200" ry="200" fill="url(#bgGrad)"/>
+
+  <!-- Folder tab -->
+  <path d="M 120 380 L 120 340 Q 120 300 160 300 L 380 300 Q 410 300 425 325 L 460 380 Z"
+        fill="url(#tabGrad)" opacity="0.9"/>
+
+  <!-- Folder body -->
+  <path d="M 120 380 L 464 380 L 904 380 L 904 820 Q 904 860 864 860 L 160 860 Q 120 860 120 820 Z"
+        fill="url(#folderGrad)"/>
+
+  <!-- Folder top edge highlight -->
+  <path d="M 120 380 L 464 380 L 904 380"
+        fill="none" stroke="#1a6899" stroke-width="3" opacity="0.8"/>
+
+  <!-- Waveform bars (clipped inside folder) -->
+  <g clip-path="url(#folderClip)" filter="url(#softGlow)">
+    <!-- Bar heights simulate an audio waveform -->
+    <rect x="168" y="530" width="36" height="180" rx="18" fill="url(#waveGrad)" opacity="0.7"/>
+    <rect x="222" y="470" width="36" height="240" rx="18" fill="url(#waveGrad)" opacity="0.8"/>
+    <rect x="276" y="430" width="36" height="280" rx="18" fill="url(#waveGrad)" opacity="0.9"/>
+    <rect x="330" y="390" width="36" height="320" rx="18" fill="url(#waveGrad)"/>
+    <rect x="384" y="450" width="36" height="260" rx="18" fill="url(#waveGrad)" opacity="0.95"/>
+    <rect x="438" y="410" width="36" height="300" rx="18" fill="url(#waveGrad)"/>
+    <rect x="492" y="480" width="36" height="230" rx="18" fill="url(#waveGrad)" opacity="0.95"/>
+    <rect x="546" y="420" width="36" height="290" rx="18" fill="url(#waveGrad)"/>
+    <rect x="600" y="460" width="36" height="250" rx="18" fill="url(#waveGrad)" opacity="0.95"/>
+    <rect x="654" y="500" width="36" height="210" rx="18" fill="url(#waveGrad)" opacity="0.9"/>
+    <rect x="708" y="440" width="36" height="270" rx="18" fill="url(#waveGrad)" opacity="0.85"/>
+    <rect x="762" y="480" width="36" height="230" rx="18" fill="url(#waveGrad)" opacity="0.8"/>
+    <rect x="816" y="530" width="36" height="180" rx="18" fill="url(#waveGrad)" opacity="0.7"/>
+  </g>
+
+  <!-- Folder body outline -->
+  <path d="M 120 340 L 120 820 Q 120 860 160 860 L 864 860 Q 904 860 904 820 L 904 380 Q 904 340 864 340 L 464 340 L 425 325 Q 410 300 380 300 L 160 300 Q 120 300 120 340 Z"
+        fill="none" stroke="#1e5799" stroke-width="4" opacity="0.6"/>
+
+  <!-- Subtle note symbol top-right of folder -->
+  <g opacity="0.35" transform="translate(790, 180)">
+    <circle cx="0" cy="40" r="22" fill="#e94560"/>
+    <rect x="-2" y="-50" width="20" height="95" rx="3" fill="#e94560"/>
+    <rect x="-2" y="-50" width="50" height="16" rx="3" fill="#e94560"/>
+  </g>
+
+</svg>
