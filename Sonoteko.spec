@@ -19,6 +19,7 @@ for _fw in ('QtDBus',):
 a = Analysis(
     ['sonoteko/main.py'],
     pathex=[],
+    target_arch='arm64',
     binaries=_qt_frameworks,
     datas=[
         ('qt.conf', '.'),
