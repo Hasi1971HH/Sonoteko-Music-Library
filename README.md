@@ -2,6 +2,16 @@
 
 Ein benutzerfreundlicher Tag-Editor für MP3- und FLAC-Dateien mit nativer Mac-GUI.
 
+## Download & Installation
+
+1. Gehe zu [**Releases**](../../releases)
+2. Lade die Datei `Hasis-ID3-Tag-Editor-macOS.zip` herunter
+3. ZIP entpacken
+4. `Hasi's ID3-Tag-Editor.app` in den Programme-Ordner ziehen
+5. Fertig — einfach doppelklicken!
+
+> **Hinweis beim ersten Start:** macOS zeigt möglicherweise eine Warnung, da die App nicht über den App Store installiert wurde. In diesem Fall: Rechtsklick auf die App → "Öffnen" → "Öffnen" bestätigen. Das muss nur beim ersten Mal gemacht werden.
+
 ## Features
 
 - **MP3 & FLAC Support** — Lesen und Schreiben aller gängigen Tags (ID3v2 / Vorbis Comments)
@@ -13,40 +23,12 @@ Ein benutzerfreundlicher Tag-Editor für MP3- und FLAC-Dateien mit nativer Mac-G
 - **Alle Tag-Felder** — Titel, Künstler, Album, Jahr, Genre, Komponist, BPM, ISRC, Tonart, Stimmung und viele mehr
 - **Benutzerfreundlich** — Deutsche Oberfläche, intuitive Bedienung, Fortschrittsanzeigen
 
-## Installation
-
-### Voraussetzungen
-- Python 3.10 oder neuer
-- macOS (für natives Look & Feel optimiert)
-
-### Setup
-
-```bash
-# Repository klonen
-git clone https://github.com/Hasi1971HH/Hasis-ID3-Tag-Editor.git
-cd Hasis-ID3-Tag-Editor
-
-# Virtuelle Umgebung erstellen (empfohlen)
-python3 -m venv venv
-source venv/bin/activate
-
-# Abhängigkeiten installieren
-pip install -r requirements.txt
-```
-
-## Benutzung
-
-```bash
-# App starten
-python -m tag_editor.main
-```
-
-### Schnellstart
+## Schnellstart
 
 1. **Dateien laden**: Über `Datei → Dateien öffnen` oder per Drag & Drop
 2. **Tags bearbeiten**: Datei(en) in der Liste auswählen → Tags rechts bearbeiten
 3. **Batch-Bearbeitung**: Mehrere Dateien auswählen → Tab "Batch-Bearbeitung" → Felder ausfüllen → "Anwenden"
-4. **Speichern**: `💾 Speichern` oder `⌘S`
+4. **Speichern**: `Speichern` oder `⌘S`
 
 ### Tastenkürzel
 
@@ -57,15 +39,25 @@ python -m tag_editor.main
 | `⌘S` | Speichern |
 | `⌘A` | Alle auswählen |
 
-## Projektstruktur
+## Für Entwickler
 
+### Aus dem Quellcode starten
+
+```bash
+git clone https://github.com/Hasi1971HH/Hasis-ID3-Tag-Editor.git
+cd Hasis-ID3-Tag-Editor
+python3 -m venv venv && source venv/bin/activate
+pip install -r requirements.txt
+python -m tag_editor.main
 ```
-tag_editor/
-├── __init__.py          # Package-Info
-├── main.py              # Einstiegspunkt & Styling
-├── main_window.py       # Hauptfenster (GUI)
-└── tag_handler.py       # Tag-Lesen/Schreiben (mutagen)
+
+### App selbst bauen
+
+```bash
+./build.sh
 ```
+
+Die fertige App liegt dann unter `dist/Hasi's ID3-Tag-Editor.app`.
 
 ## Lizenz
 
