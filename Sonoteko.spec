@@ -83,7 +83,7 @@ coll = COLLECT(
 app = BUNDLE(
     coll,
     name='Sonoteko.app',
-    icon='assets/icon.svg',
+    icon='assets/icon.icns',
     bundle_identifier='de.hasi.sonoteko',
     info_plist={
         'CFBundleName': 'Sonoteko',
