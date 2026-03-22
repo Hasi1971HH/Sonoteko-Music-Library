@@ -4,6 +4,7 @@
 import sys
 from pathlib import Path
 import PyQt6 as _pyqt6
+from PyInstaller.utils.hooks import collect_submodules
 
 block_cipher = None
 
@@ -25,36 +26,21 @@ a = Analysis(
         ('qt.conf', '.'),
         ('assets/icon.svg', 'assets'),
     ],
-    hiddenimports=[
-        'sonoteko',
-        'sonoteko.main_window',
-        'sonoteko.database',
-        'sonoteko.library_view',
-        'sonoteko.tag_editor_panel',
-        'sonoteko.player_widget',
-        'sonoteko.online_panel',
-        'sonoteko.playlist_manager',
-        'sonoteko.export_manager',
-        'sonoteko.backup_manager',
-        'sonoteko.replaygain',
-        'sonoteko.tag_handler',
-        'mutagen',
-        'mutagen.mp3',
-        'mutagen.flac',
-        'mutagen.id3',
-        'mutagen.id3._frames',
-        'mutagen.oggvorbis',
-        'mutagen.mp4',
-        'PIL',
-        'PIL.Image',
-        'requests',
-        'PyQt6.QtMultimedia',
-        'PyQt6.QtMultimediaWidgets',
-        'xml.etree.ElementTree',
-        'xml.dom.minidom',
-        'sqlite3',
-        'json',
-    ],
+    hiddenimports=(
+        collect_submodules('sonoteko') +
+        collect_submodules('mutagen') +
+        [
+            'PIL',
+            'PIL.Image',
+            'requests',
+            'PyQt6.QtMultimedia',
+            'PyQt6.QtMultimediaWidgets',
+            'xml.etree.ElementTree',
+            'xml.dom.minidom',
+            'sqlite3',
+            'json',
+        ]
+    ),
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
