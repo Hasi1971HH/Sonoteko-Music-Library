@@ -30,11 +30,11 @@ jobs:
 
       - name: Icon konvertieren (SVG → ICNS)
         run: |
-          pip install cairosvg
+          brew install librsvg
           mkdir -p assets/icon.iconset
           for size in 16 32 64 128 256 512; do
-            cairosvg assets/icon.svg -o assets/icon.iconset/icon_${size}x${size}.png -W $size -H $size
-            cairosvg assets/icon.svg -o assets/icon.iconset/icon_${size}x${size}@2x.png -W $((size*2)) -H $((size*2))
+            rsvg-convert -w $size -h $size assets/icon.svg -o assets/icon.iconset/icon_${size}x${size}.png
+            rsvg-convert -w $((size*2)) -h $((size*2)) assets/icon.svg -o assets/icon.iconset/icon_${size}x${size}@2x.png
           done
           iconutil -c icns assets/icon.iconset -o assets/icon.icns
 
