@@ -11,7 +11,7 @@ from mutagen.flac import FLAC, Picture
 from mutagen.id3 import (
     ID3, TIT2, TPE1, TALB, TPE2, TDRC, TCON, TRCK, TPOS,
     TCOM, COMM, TBPM, TPUB, TCOP, TENC, TSRC, TKEY,
-    APIC, TXXX, RVA2, RGAD,
+    APIC, TXXX, RVA2,
     ID3NoHeaderError
 )
 from mutagen.ogg import OggFileType
