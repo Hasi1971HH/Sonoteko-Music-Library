@@ -3,13 +3,24 @@
 
 import sys
 from pathlib import Path
+import PyQt6 as _pyqt6
 
 block_cipher = None
+
+# Locate Qt frameworks bundled with PyQt6.
+# PyInstaller does not always follow rpath-based Qt framework dependencies
+# automatically; QtDBus is required by QtGui but is often missed.
+_qt_lib = Path(_pyqt6.__file__).parent / 'Qt6' / 'lib'
+_qt_frameworks = []
+for _fw in ('QtDBus',):
+    _binary = _qt_lib / f'{_fw}.framework' / 'Versions' / 'A' / _fw
+    if _binary.exists():
+        _qt_frameworks.append((str(_binary), f'{_fw}.framework/Versions/A'))
 
 a = Analysis(
     ['tag_editor/main.py'],
     pathex=[],
-    binaries=[],
+    binaries=_qt_frameworks,
     # qt.conf must land *next to the executable* (destination '.') so that Qt
     # finds it before it falls back to CFBundleGetMainBundle().  That CFBundle
     # call crashes on macOS 15+ / 26.x due to PAC-protected CoreFoundation
