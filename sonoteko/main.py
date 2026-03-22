@@ -33,10 +33,10 @@ def main():
     if icon_path and os.path.exists(icon_path):
         app.setWindowIcon(QIcon(icon_path))
 
-    try:
+    if getattr(sys, "frozen", False):
+        from sonoteko.main_window import MainWindow, STYLE
+    else:
         from .main_window import MainWindow, STYLE
-    except ImportError:
-        from main_window import MainWindow, STYLE
     app.setStyleSheet(STYLE)
 
     window = MainWindow()
