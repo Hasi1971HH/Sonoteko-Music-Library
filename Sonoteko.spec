@@ -9,6 +9,7 @@ from PyInstaller.utils.hooks import collect_submodules
 # collect_submodules cannot find local (non-installed) packages at spec-parse
 # time even with pathex, so we list sonoteko submodules explicitly.
 _sonoteko_modules = [
+    'sonoteko.main',
     'sonoteko.backup_manager',
     'sonoteko.database',
     'sonoteko.export_manager',
@@ -34,7 +35,7 @@ for _fw in ('QtDBus',):
         _qt_frameworks.append((str(_binary), f'{_fw}.framework/Versions/A'))
 
 a = Analysis(
-    ['sonoteko/main.py'],
+    ['sonoteko_app.py'],
     pathex=[str(Path('.').resolve())],
     target_arch='arm64',
     binaries=_qt_frameworks,
