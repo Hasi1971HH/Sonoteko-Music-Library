@@ -215,7 +215,7 @@ class PlaylistManager(QWidget):
         elif action == act_delete:
             reply = QMessageBox.question(
                 self, "Playlist löschen",
-                f"Playlist „{item.text()}" wirklich löschen?",
+                f'Playlist \u201e{item.text()}\u201c wirklich löschen?',
                 QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
             )
             if reply == QMessageBox.StandardButton.Yes:
