@@ -27,6 +27,7 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
           pip install pyinstaller
+          pip install -e .
 
       - name: Icon konvertieren (SVG → ICNS)
         run: |
