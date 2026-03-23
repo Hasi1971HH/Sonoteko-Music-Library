@@ -22,7 +22,7 @@ from sonoteko.backup_manager import BackupPanel
 from sonoteko.replaygain import ReplayGainPanel
 
 
-STYLE = """
+DARK_STYLE = """
 QMainWindow, QWidget {
     background: #12121e;
     color: #ddd;
@@ -175,17 +175,205 @@ QProgressBar::chunk {
 QMessageBox { background: #1a1a2e; }
 """
 
+LIGHT_STYLE = """
+QMainWindow, QWidget {
+    background: #f0f0f5;
+    color: #1a1a2e;
+    font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
+    font-size: 13px;
+}
+QTabWidget::pane {
+    border: 1px solid #b0bcd0;
+    border-radius: 4px;
+}
+QTabBar::tab {
+    background: #e0e0ea;
+    color: #555;
+    padding: 6px 14px;
+    border: 1px solid #b0bcd0;
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+}
+QTabBar::tab:selected {
+    background: #4a90d9;
+    color: #fff;
+}
+QTabBar::tab:hover {
+    background: #d0d8e8;
+    color: #222;
+}
+QGroupBox {
+    border: 1px solid #b0bcd0;
+    border-radius: 4px;
+    margin-top: 8px;
+    padding-top: 6px;
+    color: #333;
+    font-weight: bold;
+}
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 8px;
+}
+QLineEdit, QTextEdit {
+    background: #ffffff;
+    border: 1px solid #b0bcd0;
+    border-radius: 3px;
+    color: #1a1a2e;
+    padding: 3px 6px;
+    selection-background-color: #e94560;
+}
+QLineEdit:focus, QTextEdit:focus {
+    border-color: #4a90d9;
+}
+QPushButton {
+    background: #4a90d9;
+    color: #fff;
+    border: 1px solid #3a80c9;
+    border-radius: 4px;
+    padding: 5px 12px;
+}
+QPushButton:hover { background: #5aa0e9; }
+QPushButton:pressed { background: #3a80c9; }
+QPushButton:disabled { background: #d0d0d8; color: #999; border-color: #c0c0c8; }
+QTableView {
+    background: #f0f0f5;
+    alternate-background-color: #e8e8f2;
+    gridline-color: #c8ccd8;
+    selection-background-color: #4a90d9;
+    selection-color: #fff;
+}
+QHeaderView::section {
+    background: #4a90d9;
+    color: #fff;
+    padding: 4px 8px;
+    border: none;
+    border-right: 1px solid #3a80c9;
+    font-weight: bold;
+}
+QScrollBar:vertical {
+    background: #e0e0ea;
+    width: 10px;
+    border-radius: 5px;
+}
+QScrollBar::handle:vertical {
+    background: #a0b0c8;
+    border-radius: 5px;
+    min-height: 20px;
+}
+QScrollBar::handle:vertical:hover { background: #e94560; }
+QScrollBar:horizontal {
+    background: #e0e0ea;
+    height: 10px;
+}
+QScrollBar::handle:horizontal {
+    background: #a0b0c8;
+    border-radius: 5px;
+}
+QSplitter::handle { background: #c0c8d8; }
+QSplitter::handle:horizontal { width: 2px; }
+QSplitter::handle:vertical { height: 2px; }
+QStatusBar {
+    background: #e0e0ea;
+    color: #666;
+    font-size: 11px;
+}
+QToolBar {
+    background: #e0e0ea;
+    border-bottom: 1px solid #c0c8d8;
+    spacing: 4px;
+    padding: 2px;
+}
+QToolBar QToolButton {
+    background: transparent;
+    color: #333;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 3px;
+}
+QToolBar QToolButton:hover { background: #c8d8e8; color: #000; }
+QListWidget {
+    background: #f0f0f5;
+    alternate-background-color: #e8e8f2;
+    border: 1px solid #b0bcd0;
+    border-radius: 3px;
+}
+QListWidget::item:selected {
+    background: #4a90d9;
+    color: #fff;
+}
+QListWidget::item:hover { background: #d8e4f0; }
+QCheckBox { color: #333; }
+QCheckBox::indicator {
+    width: 14px;
+    height: 14px;
+    border: 1px solid #a0b0c8;
+    border-radius: 2px;
+    background: #ffffff;
+}
+QCheckBox::indicator:checked {
+    background: #e94560;
+    border-color: #e94560;
+}
+QProgressBar {
+    background: #e0e0ea;
+    border: 1px solid #b0bcd0;
+    border-radius: 3px;
+    text-align: center;
+    color: #555;
+}
+QProgressBar::chunk {
+    background: #e94560;
+    border-radius: 2px;
+}
+QMessageBox { background: #f0f0f5; }
+"""
+
+# keep backward-compatible alias
+STYLE = DARK_STYLE
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.db = LibraryDatabase()
         self._current_tracks = []
+        self._dark_mode = self._detect_dark_mode()
         self._setup_window()
         self._setup_ui()
         self._setup_menu()
         self._setup_toolbar()
         self._restore_geometry()
+        self._apply_theme()
+        QApplication.instance().styleHints().colorSchemeChanged.connect(
+            self._on_system_theme_changed
+        )
+
+    def _detect_dark_mode(self) -> bool:
+        settings = QSettings()
+        saved = settings.value("theme/dark_mode")
+        if saved is not None:
+            return saved == "true"
+        scheme = QApplication.instance().styleHints().colorScheme()
+        return scheme != Qt.ColorScheme.Light
+
+    def _apply_theme(self):
+        QApplication.instance().setStyleSheet(
+            DARK_STYLE if self._dark_mode else LIGHT_STYLE
+        )
+        if hasattr(self, "_theme_action"):
+            self._theme_action.setText("☀️  Hell" if self._dark_mode else "🌙  Dunkel")
+
+    def _toggle_theme(self):
+        self._dark_mode = not self._dark_mode
+        QSettings().setValue("theme/dark_mode", "true" if self._dark_mode else "false")
+        self._apply_theme()
+
+    def _on_system_theme_changed(self):
+        if QSettings().value("theme/dark_mode") is None:
+            self._dark_mode = not (
+                QApplication.instance().styleHints().colorScheme() == Qt.ColorScheme.Light
+            )
+            self._apply_theme()
 
     def _setup_window(self):
         self.setWindowTitle(f"{APP_NAME} {__version__}")
@@ -339,6 +527,12 @@ class MainWindow(QMainWindow):
         )
         tb.addAction(act_online)
 
+        tb.addSeparator()
+        self._theme_action = QAction("", self)
+        self._theme_action.setToolTip("Hell/Dunkel-Modus wechseln")
+        self._theme_action.triggered.connect(self._toggle_theme)
+        tb.addAction(self._theme_action)
+
     # ── Slots ─────────────────────────────────────────────────────────────────
 
     def _open_files(self):
@@ -375,7 +569,7 @@ class MainWindow(QMainWindow):
         self.db.update_play_count(track.path)
 
     def _on_tags_saved(self, paths: list[str]):
-        self._library_view.refresh()
+        self._library_view.update_tracks(paths)
         self._update_status(f"Gespeichert: {len(paths)} Track(s)")
 
     def _on_scan_finished(self, added: int, updated: int):
