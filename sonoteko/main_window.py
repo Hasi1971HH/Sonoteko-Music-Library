@@ -363,6 +363,14 @@ class MainWindow(QMainWindow):
         if hasattr(self, "_theme_action"):
             self._theme_action.setText("☀️  Hell" if self._dark_mode else "🌙  Dunkel")
 
+    def _show_tag_editor_panel(self):
+        """Rechten Bereich (Tag-Editor) wieder einblenden und auf Standardbreite setzen."""
+        sizes = self._main_splitter.sizes()
+        total = sum(sizes)
+        if sizes[-1] < 100:
+            self._main_splitter.setSizes([max(total - 420, 300), 420])
+        self._right_tabs.setCurrentWidget(self._tag_editor)
+
     def _toggle_theme(self):
         self._dark_mode = not self._dark_mode
         QSettings().setValue("theme/dark_mode", "true" if self._dark_mode else "false")
@@ -488,7 +496,17 @@ class MainWindow(QMainWindow):
         act_cleanup.triggered.connect(self._library_view._cleanup_missing)
         lib_menu.addAction(act_cleanup)
 
-        # Playlist
+        # Ansicht
+        view_menu = menubar.addMenu("Ansicht")
+        act_show_editor = QAction("Tag-Editor einblenden", self)
+        act_show_editor.setShortcut("Ctrl+T")
+        act_show_editor.triggered.connect(self._show_tag_editor_panel)
+        view_menu.addAction(act_show_editor)
+
+        act_theme = QAction("Theme umschalten", self)
+        act_theme.triggered.connect(self._toggle_theme)
+        view_menu.addAction(act_theme)
+
         # Info
         help_menu = menubar.addMenu("Hilfe")
         act_about = QAction(f"Über {APP_NAME}", self)
