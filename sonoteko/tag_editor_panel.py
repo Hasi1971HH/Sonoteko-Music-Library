@@ -13,7 +13,7 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtGui import QPixmap, QImage
 
-from .tag_handler import (
+from sonoteko.tag_handler import (
     AudioFileInfo, read_tags, write_tags, rename_file,
     FIELD_LABELS, format_duration
 )

@@ -15,8 +15,8 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtCore import Qt, QThread, pyqtSignal
 
-from .database import LibraryDatabase, TrackRecord
-from .tag_handler import format_duration
+from sonoteko.database import LibraryDatabase, TrackRecord
+from sonoteko.tag_handler import format_duration
 
 
 # ── iTunes XML ────────────────────────────────────────────────────────────────
@@ -294,7 +294,7 @@ class ExportPanel(QWidget):
             QMessageBox.critical(self, "Fehler", str(e))
 
     def _export_m3u(self):
-        from .playlist_manager import export_m3u
+        from sonoteko.playlist_manager import export_m3u
         tracks = self.db.get_all_tracks()
         if not tracks:
             QMessageBox.information(self, "Keine Tracks", "Die Library ist leer.")

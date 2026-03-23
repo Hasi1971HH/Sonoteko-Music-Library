@@ -13,8 +13,8 @@ from PyQt6.QtWidgets import (
     QButtonGroup
 )
 
-from .database import LibraryDatabase, TrackRecord
-from .tag_handler import write_tags, read_tags
+from sonoteko.database import LibraryDatabase, TrackRecord
+from sonoteko.tag_handler import write_tags, read_tags
 
 
 # ── Analysis ───────────────────────────────────────────────────────────────────

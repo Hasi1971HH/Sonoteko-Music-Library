@@ -13,8 +13,8 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtCore import Qt, QThread, pyqtSignal
 
-from .database import LibraryDatabase, TrackRecord
-from .tag_handler import read_tags, write_tags
+from sonoteko.database import LibraryDatabase, TrackRecord
+from sonoteko.tag_handler import read_tags, write_tags
 
 
 # ── Worker ─────────────────────────────────────────────────────────────────────
