@@ -15,8 +15,8 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtGui import QAction, QKeySequence, QColor, QBrush
 
-from .database import LibraryDatabase, TrackRecord
-from .tag_handler import read_tags, format_duration
+from sonoteko.database import LibraryDatabase, TrackRecord
+from sonoteko.tag_handler import read_tags, format_duration
 
 
 # ── Scan-Worker ───────────────────────────────────────────────────────────────
@@ -32,7 +32,7 @@ class ScanWorker(QThread):
         self._abort = False
 
     def run(self):
-        from .tag_handler import scan_directory
+        from sonoteko.tag_handler import scan_directory
         all_files: list[str] = []
         for d in self.directories:
             all_files.extend(scan_directory(d))

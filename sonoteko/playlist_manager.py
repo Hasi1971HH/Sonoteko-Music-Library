@@ -11,8 +11,8 @@ from PyQt6.QtWidgets import (
     QSplitter, QMenu, QAbstractItemView
 )
 
-from .database import LibraryDatabase, TrackRecord
-from .tag_handler import format_duration
+from sonoteko.database import LibraryDatabase, TrackRecord
+from sonoteko.tag_handler import format_duration
 
 
 class PlaylistManager(QWidget):

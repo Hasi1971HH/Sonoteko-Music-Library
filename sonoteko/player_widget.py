@@ -11,7 +11,7 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtGui import QIcon
 
-from .tag_handler import format_duration
+from sonoteko.tag_handler import format_duration
 
 
 class PlayerWidget(QWidget):

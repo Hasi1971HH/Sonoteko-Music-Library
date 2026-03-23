@@ -11,16 +11,16 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtGui import QAction, QIcon, QKeySequence, QPixmap
 
-from . import APP_NAME, __version__
-from .database import LibraryDatabase
-from .library_view import LibraryView
-from .tag_editor_panel import TagEditorPanel
-from .player_widget import PlayerWidget
-from .online_panel import OnlinePanel
-from .playlist_manager import PlaylistManager
-from .export_manager import ExportPanel
-from .backup_manager import BackupPanel
-from .replaygain import ReplayGainPanel
+from sonoteko import APP_NAME, __version__
+from sonoteko.database import LibraryDatabase
+from sonoteko.library_view import LibraryView
+from sonoteko.tag_editor_panel import TagEditorPanel
+from sonoteko.player_widget import PlayerWidget
+from sonoteko.online_panel import OnlinePanel
+from sonoteko.playlist_manager import PlaylistManager
+from sonoteko.export_manager import ExportPanel
+from sonoteko.backup_manager import BackupPanel
+from sonoteko.replaygain import ReplayGainPanel
 
 
 STYLE = """
