@@ -6,7 +6,7 @@ from typing import Optional
 
 from PyQt6.QtCore import (
     Qt, QAbstractTableModel, QModelIndex, QSortFilterProxyModel,
-    QThread, pyqtSignal, QMimeData, QUrl
+    QThread, pyqtSignal, QMimeData, QUrl, QSettings
 )
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QTableView, QHeaderView,
@@ -285,6 +285,7 @@ class LibraryView(QWidget):
         self._table.setDragDropMode(QAbstractItemView.DragDropMode.DropOnly)
 
         layout.addWidget(self._table)
+        self._load_column_visibility()
 
         # ── Footer ──
         footer = QHBoxLayout()
@@ -468,13 +469,29 @@ class LibraryView(QWidget):
 
     # ── Column visibility ─────────────────────────────────────────────────────
 
+    def _load_column_visibility(self):
+        settings = QSettings("Sonoteko", "LibraryView")
+        for i, (col_name, _) in enumerate(COLUMNS):
+            hidden = settings.value(f"column_hidden/{col_name}", False, type=bool)
+            self._table.setColumnHidden(i, hidden)
+
+    def _save_column_visibility(self):
+        settings = QSettings("Sonoteko", "LibraryView")
+        for i, (col_name, _) in enumerate(COLUMNS):
+            settings.setValue(f"column_hidden/{col_name}", self._table.isColumnHidden(i))
+
     def _show_column_menu(self, pos=None):
         menu = QMenu(self)
         for i, (col_name, col_label) in enumerate(COLUMNS):
             action = QAction(col_label, menu)
             action.setCheckable(True)
             action.setChecked(not self._table.isColumnHidden(i))
-            action.triggered.connect(lambda checked, idx=i: self._table.setColumnHidden(idx, not checked))
+
+            def toggle(checked, idx=i):
+                self._table.setColumnHidden(idx, not checked)
+                self._save_column_visibility()
+
+            action.triggered.connect(toggle)
             menu.addAction(action)
 
         # Anzeige: unter dem Button oder am Mauszeiger (Rechtsklick auf Header)
