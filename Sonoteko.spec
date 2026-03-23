@@ -6,6 +6,22 @@ from pathlib import Path
 import PyQt6 as _pyqt6
 from PyInstaller.utils.hooks import collect_submodules
 
+# collect_submodules cannot find local (non-installed) packages at spec-parse
+# time even with pathex, so we list sonoteko submodules explicitly.
+_sonoteko_modules = [
+    'sonoteko.backup_manager',
+    'sonoteko.database',
+    'sonoteko.export_manager',
+    'sonoteko.library_view',
+    'sonoteko.main_window',
+    'sonoteko.online_panel',
+    'sonoteko.player_widget',
+    'sonoteko.playlist_manager',
+    'sonoteko.replaygain',
+    'sonoteko.tag_editor_panel',
+    'sonoteko.tag_handler',
+]
+
 block_cipher = None
 
 # Locate Qt frameworks bundled with PyQt6.
@@ -27,7 +43,7 @@ a = Analysis(
         ('assets/icon.svg', 'assets'),
     ],
     hiddenimports=(
-        collect_submodules('sonoteko') +
+        _sonoteko_modules +
         collect_submodules('mutagen') +
         [
             'PIL',
