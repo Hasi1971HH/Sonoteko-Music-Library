@@ -581,8 +581,17 @@ class MainWindow(QMainWindow):
                 )
 
     def _on_track_activated(self, track):
-        self._player.set_playlist([track])
-        self._player._playlist_index = 0
+        if track.album:
+            playlist = self.db.get_tracks_by_album(track.album)
+        else:
+            playlist = [track]
+        self._player.set_playlist(playlist)
+        try:
+            self._player._playlist_index = next(
+                i for i, t in enumerate(playlist) if t.path == track.path
+            )
+        except StopIteration:
+            self._player._playlist_index = 0
         self._player.play_file(track.path, track.title, track.artist)
         self.db.update_play_count(track.path)
 

@@ -144,6 +144,7 @@ class PlayerWidget(QWidget):
         self._player.playbackStateChanged.connect(self._on_state_changed)
         self._player.positionChanged.connect(self._on_position_changed)
         self._player.durationChanged.connect(self._on_duration_changed)
+        self._player.mediaStatusChanged.connect(self._on_media_status_changed)
 
     # ── Public API ────────────────────────────────────────────────────────────
 
@@ -205,6 +206,12 @@ class PlayerWidget(QWidget):
         if duration_ms > 0:
             target = int(self._seek_slider.value() / 1000 * duration_ms)
             self._player.setPosition(target)
+
+    def _on_media_status_changed(self, status: QMediaPlayer.MediaStatus):
+        if status == QMediaPlayer.MediaStatus.EndOfMedia:
+            playlist = getattr(self, "_playlist", [])
+            if playlist and self._playlist_index < len(playlist) - 1:
+                self._on_next()
 
     def _on_prev(self):
         if hasattr(self, "_playlist") and self._playlist:
