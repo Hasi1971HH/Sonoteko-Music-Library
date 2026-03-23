@@ -25,14 +25,15 @@ class ScanWorker(QThread):
     progress = pyqtSignal(int, int, str)   # current, total, path
     finished = pyqtSignal(int, int)        # added, updated
 
-    def __init__(self, directories: list[str], db: LibraryDatabase, parent=None):
+    def __init__(self, directories: list[str], db_path: str, parent=None):
         super().__init__(parent)
         self.directories = directories
-        self.db = db
+        self.db_path = db_path
         self._abort = False
 
     def run(self):
         from sonoteko.tag_handler import scan_directory
+        db = LibraryDatabase(self.db_path)
         all_files: list[str] = []
         for d in self.directories:
             all_files.extend(scan_directory(d))
@@ -46,7 +47,7 @@ class ScanWorker(QThread):
             self.progress.emit(i + 1, total, filepath)
             try:
                 mtime = os.path.getmtime(filepath)
-                existing = self.db.get_track(filepath)
+                existing = db.get_track(filepath)
                 if existing and existing.date_modified >= mtime:
                     continue
                 info = read_tags(filepath)
@@ -78,7 +79,7 @@ class ScanWorker(QThread):
                     date_added=time.time() if existing is None else existing.date_added,
                     date_modified=mtime,
                 )
-                self.db.upsert_track(rec)
+                db.upsert_track(rec)
                 if existing is None:
                     added += 1
                 else:
@@ -317,7 +318,7 @@ class LibraryView(QWidget):
         self._btn_scan.setEnabled(False)
         self.scan_started.emit()
 
-        self._worker = ScanWorker(directories, self.db)
+        self._worker = ScanWorker(directories, self.db.db_path)
         self._worker.progress.connect(self._on_scan_progress)
         self._worker.finished.connect(self._on_scan_finished)
         self._worker.start()
