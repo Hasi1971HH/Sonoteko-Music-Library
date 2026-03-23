@@ -569,7 +569,7 @@ class MainWindow(QMainWindow):
         self.db.update_play_count(track.path)
 
     def _on_tags_saved(self, paths: list[str]):
-        self._library_view.refresh()
+        self._library_view.update_tracks(paths)
         self._update_status(f"Gespeichert: {len(paths)} Track(s)")
 
     def _on_scan_finished(self, added: int, updated: int):

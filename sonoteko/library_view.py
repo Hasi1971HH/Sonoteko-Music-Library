@@ -298,6 +298,46 @@ class LibraryView(QWidget):
     def refresh(self):
         self._load_from_db()
 
+    def update_tracks(self, paths: list[str]):
+        """Tags aus Dateien neu lesen und DB aktualisieren (nach Tag-Editor-Speichern)."""
+        for path in paths:
+            try:
+                info = read_tags(path)
+                mtime = os.path.getmtime(path)
+                existing = self.db.get_track(path)
+                rec = TrackRecord(
+                    path=path,
+                    title=info.tags.get("title", ""),
+                    artist=info.tags.get("artist", ""),
+                    album=info.tags.get("album", ""),
+                    albumartist=info.tags.get("albumartist", ""),
+                    year=info.tags.get("date", ""),
+                    genre=info.tags.get("genre", ""),
+                    tracknumber=info.tags.get("tracknumber", ""),
+                    discnumber=info.tags.get("discnumber", ""),
+                    composer=info.tags.get("composer", ""),
+                    comment=info.tags.get("comment", ""),
+                    bpm=info.tags.get("bpm", ""),
+                    isrc=info.tags.get("isrc", ""),
+                    duration=info.audio_info.duration,
+                    bitrate=info.audio_info.bitrate,
+                    samplerate=info.audio_info.samplerate,
+                    channels=info.audio_info.channels,
+                    format=info.audio_info.format,
+                    filesize=info.audio_info.filesize,
+                    has_cover=info.cover_data is not None,
+                    replaygain_track_gain=info.tags.get("replaygain_track_gain", ""),
+                    replaygain_track_peak=info.tags.get("replaygain_track_peak", ""),
+                    replaygain_album_gain=info.tags.get("replaygain_album_gain", ""),
+                    replaygain_album_peak=info.tags.get("replaygain_album_peak", ""),
+                    date_added=existing.date_added if existing else time.time(),
+                    date_modified=mtime,
+                )
+                self.db.upsert_track(rec)
+            except Exception as e:
+                print(f"[update_tracks] {path}: {e}")
+        self._load_from_db()
+
     def show_tracks(self, tracks: list[TrackRecord]):
         self._model.set_tracks(tracks)
         self._update_count_label()
