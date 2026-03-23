@@ -17,7 +17,6 @@ from sonoteko.library_view import LibraryView
 from sonoteko.tag_editor_panel import TagEditorPanel
 from sonoteko.player_widget import PlayerWidget
 from sonoteko.online_panel import OnlinePanel
-from sonoteko.playlist_manager import PlaylistManager
 from sonoteko.export_manager import ExportPanel
 from sonoteko.backup_manager import BackupPanel
 from sonoteko.replaygain import ReplayGainPanel
@@ -214,11 +213,6 @@ class MainWindow(QMainWindow):
         self._library_view.scan_finished.connect(self._on_scan_finished)
         self._center_tabs.addTab(self._library_view, "Library")
 
-        # Playlists tab
-        self._playlist_mgr = PlaylistManager(self.db)
-        self._playlist_mgr.track_activated.connect(self._on_track_activated)
-        self._center_tabs.addTab(self._playlist_mgr, "Playlists")
-
         # Export tab
         self._export_panel = ExportPanel(self.db)
         self._center_tabs.addTab(self._export_panel, "Export")
@@ -307,15 +301,6 @@ class MainWindow(QMainWindow):
         lib_menu.addAction(act_cleanup)
 
         # Playlist
-        pl_menu = menubar.addMenu("Playlist")
-        act_new_pl = QAction("Neue Playlist …", self)
-        act_new_pl.triggered.connect(self._playlist_mgr._create_playlist)
-        pl_menu.addAction(act_new_pl)
-
-        act_add_to_pl = QAction("Auswahl zu Playlist hinzufügen", self)
-        act_add_to_pl.triggered.connect(self._add_to_playlist)
-        pl_menu.addAction(act_add_to_pl)
-
         # Info
         help_menu = menubar.addMenu("Hilfe")
         act_about = QAction(f"Über {APP_NAME}", self)
@@ -353,11 +338,6 @@ class MainWindow(QMainWindow):
             lambda: self._right_tabs.setCurrentWidget(self._online_panel)
         )
         tb.addAction(act_online)
-
-        act_pl = QAction("🎧  Playlist", self)
-        act_pl.setToolTip("Zu Playlist hinzufügen")
-        act_pl.triggered.connect(self._add_to_playlist)
-        tb.addAction(act_pl)
 
     # ── Slots ─────────────────────────────────────────────────────────────────
 
@@ -415,12 +395,6 @@ class MainWindow(QMainWindow):
     def _on_online_lyrics_ready(self, text: str):
         self._tag_editor.set_tag("lyrics", text)
         self._right_tabs.setCurrentWidget(self._tag_editor)
-
-    def _add_to_playlist(self):
-        if not self._current_tracks:
-            return
-        self._playlist_mgr.add_tracks(self._current_tracks)
-        self._center_tabs.setCurrentWidget(self._playlist_mgr)
 
     def _update_status(self, message: str = ""):
         stats = self.db.get_stats()
