@@ -294,7 +294,15 @@ class ExportPanel(QWidget):
             QMessageBox.critical(self, "Fehler", str(e))
 
     def _export_m3u(self):
-        from sonoteko.playlist_manager import export_m3u
+        def export_m3u(tracks, extended=True):
+            lines = ["#EXTM3U\n"]
+            for t in tracks:
+                if extended:
+                    dur = int(t.duration)
+                    title = f"{t.artist} - {t.title}" if t.artist else t.title
+                    lines.append(f"#EXTINF:{dur},{title}\n")
+                lines.append(t.path + "\n")
+            return "".join(lines)
         tracks = self.db.get_all_tracks()
         if not tracks:
             QMessageBox.information(self, "Keine Tracks", "Die Library ist leer.")
