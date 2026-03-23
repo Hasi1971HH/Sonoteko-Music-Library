@@ -85,9 +85,15 @@ Sonoteko ist eine leistungsstarke Desktop-App für macOS zur Verwaltung, Bearbei
 
 ---
 
-## Screenshots
+## Screenshot
 
-> *(folgen mit dem nächsten Release)*
+<div align="center">
+
+![Sonoteko Hauptfenster — Bibliothek mit 1487 Tracks, Tag-Editor und integriertem Player](assets/screenshots/sonoteko-main.png)
+
+*Bibliotheksansicht mit Tag-Editor und integriertem Player — 1487 Tracks, 797 Künstler, 94 Alben*
+
+</div>
 
 ---
 
