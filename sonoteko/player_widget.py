@@ -9,9 +9,9 @@ from PyQt6.QtWidgets import (
     QWidget, QHBoxLayout, QVBoxLayout, QSlider, QLabel,
     QPushButton, QSizePolicy
 )
-from PyQt6.QtGui import QIcon
+from PyQt6.QtGui import QIcon, QPixmap
 
-from sonoteko.tag_handler import format_duration
+from sonoteko.tag_handler import format_duration, read_tags
 
 
 class PlayerWidget(QWidget):
@@ -27,12 +27,14 @@ class PlayerWidget(QWidget):
         self._audio_output.setVolume(0.7)
         self._current_path: Optional[str] = None
         self._seeking = False
+        self._cover_pixmap: Optional[QPixmap] = None
 
         self._setup_ui()
         self._connect_signals()
 
     def _setup_ui(self):
-        self.setFixedHeight(64)
+        self.setMinimumHeight(60)
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
         self.setStyleSheet("""
             QWidget {
                 background: #1a1a2e;
@@ -68,8 +70,18 @@ class PlayerWidget(QWidget):
         """)
 
         outer = QHBoxLayout(self)
-        outer.setContentsMargins(12, 6, 12, 6)
+        outer.setContentsMargins(8, 6, 12, 6)
         outer.setSpacing(8)
+
+        # ── Cover Art ──
+        self._cover_label = QLabel()
+        self._cover_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self._cover_label.setStyleSheet(
+            "background: #0f3460; border-radius: 4px; color: #445; font-size: 22px;"
+        )
+        self._cover_label.setText("♪")
+        self._cover_label.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        outer.addWidget(self._cover_label)
 
         # ── Track info ──
         info_col = QVBoxLayout()
@@ -156,7 +168,48 @@ class PlayerWidget(QWidget):
         self._title_label.setText(name)
         self._artist_label.setText(artist)
         self._btn_play.setText("⏸")
+        self._update_cover(filepath)
         self.track_changed.emit(filepath)
+
+    def _update_cover(self, filepath: str):
+        """Liest das Cover-Bild aus den Tags und zeigt es an."""
+        self._cover_pixmap = None
+        try:
+            info = read_tags(filepath)
+            if info.cover_data:
+                px = QPixmap()
+                px.loadFromData(info.cover_data)
+                if not px.isNull():
+                    self._cover_pixmap = px
+        except Exception:
+            pass
+        self._scale_cover()
+
+    def _scale_cover(self):
+        """Skaliert das gespeicherte Cover auf die aktuelle Label-Größe."""
+        size = self._cover_label.width()
+        if size < 1:
+            return
+        if self._cover_pixmap and not self._cover_pixmap.isNull():
+            self._cover_label.setText("")
+            self._cover_label.setPixmap(
+                self._cover_pixmap.scaled(
+                    size, size,
+                    Qt.AspectRatioMode.KeepAspectRatio,
+                    Qt.TransformationMode.SmoothTransformation,
+                )
+            )
+        else:
+            self._cover_label.setPixmap(QPixmap())
+            self._cover_label.setText("♪")
+
+    def resizeEvent(self, event):
+        """Passt die Cover-Größe an die Player-Höhe an."""
+        super().resizeEvent(event)
+        inner_h = self.height() - 12          # 6px Margin oben + unten
+        cover_size = max(44, min(inner_h, 96))  # zwischen 44 und 96 px
+        self._cover_label.setFixedSize(cover_size, cover_size)
+        self._scale_cover()
 
     def toggle_play(self):
         state = self._player.playbackState()
