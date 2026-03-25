@@ -38,7 +38,7 @@ struct LibraryView: View {
                 }
                 .padding(.horizontal, 8)
                 .padding(.vertical, 4)
-                .background(.background.secondary)
+                .background(Color(NSColor.controlBackgroundColor))
                 .clipShape(RoundedRectangle(cornerRadius: 6))
             }
             .padding(.horizontal, 12)

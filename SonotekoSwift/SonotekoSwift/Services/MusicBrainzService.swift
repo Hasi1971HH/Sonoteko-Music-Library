@@ -1,6 +1,6 @@
 import Foundation
 
-struct MBRelease: Identifiable {
+struct MBRelease: Identifiable, Hashable {
     var id: String
     var title: String
     var artist: String
@@ -11,7 +11,7 @@ struct MBRelease: Identifiable {
     var coverURL: String?
 }
 
-struct MBTrack: Identifiable {
+struct MBTrack: Identifiable, Hashable {
     var id: String
     var number: String
     var title: String
