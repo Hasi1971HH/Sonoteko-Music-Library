@@ -10,10 +10,13 @@ struct ReplayGainResult {
 actor ReplayGainService {
     static let shared = ReplayGainService()
 
-    private func ffmpegPath() -> String? {
-        let candidates = ["/opt/homebrew/bin/ffmpeg","/usr/local/bin/ffmpeg","/usr/bin/ffmpeg"]
+    // nonisolated: pure filesystem check, no actor state accessed
+    private nonisolated func ffmpegPath() -> String? {
+        let candidates = ["/opt/homebrew/bin/ffmpeg", "/usr/local/bin/ffmpeg", "/usr/bin/ffmpeg"]
         return candidates.first { FileManager.default.fileExists(atPath: $0) }
     }
+
+    nonisolated func isFFmpegAvailable() -> Bool { ffmpegPath() != nil }
 
     func analyzeTrack(path: String) async -> ReplayGainResult? {
         guard let ff = ffmpegPath() else { return nil }
@@ -40,7 +43,6 @@ actor ReplayGainService {
             }
             progress(i + 1, paths.count)
         }
-        // Album gain = average of track gains
         if !trackGains.isEmpty {
             let albumGain = String(format: "%.2f dB", trackGains.reduce(0, +) / Double(trackGains.count))
             let albumPeak = String(format: "%.6f", trackPeaks.max() ?? 1.0)
@@ -69,6 +71,4 @@ actor ReplayGainService {
         if gain.isEmpty { return nil }
         return ReplayGainResult(trackGain: gain, trackPeak: peak, albumGain: "", albumPeak: "")
     }
-
-    func isFFmpegAvailable() -> Bool { ffmpegPath() != nil }
 }
