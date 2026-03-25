@@ -69,10 +69,10 @@ struct LibraryView: View {
                 }
                 .width(min: 35, ideal: 45, max: 55)
             }
-            .onChange(of: sortOrder) { _, order in
+            .onChange(of: sortOrder) { order in
                 app.filteredTracks.sort(using: order)
             }
-            .onChange(of: app.selectedTrackIDs) { _, _ in
+            .onChange(of: app.selectedTrackIDs) { _ in
                 app.loadTagsForSelection()
             }
             .contextMenu {
