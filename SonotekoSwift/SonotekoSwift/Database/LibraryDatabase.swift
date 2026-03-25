@@ -1,6 +1,9 @@
 import Foundation
 import SQLite3
 
+// SQLITE_TRANSIENT is a C macro not imported by Swift
+private let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
+
 final class LibraryDatabase {
     private var db: OpaquePointer?
     let dbPath: String
