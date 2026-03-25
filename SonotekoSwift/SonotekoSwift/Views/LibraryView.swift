@@ -38,7 +38,7 @@ struct LibraryView: View {
                 }
                 .padding(.horizontal, 8)
                 .padding(.vertical, 4)
-                .background(.background.secondary)
+                .background(Color(NSColor.controlBackgroundColor))
                 .clipShape(RoundedRectangle(cornerRadius: 6))
             }
             .padding(.horizontal, 12)
@@ -69,10 +69,10 @@ struct LibraryView: View {
                 }
                 .width(min: 35, ideal: 45, max: 55)
             }
-            .onChange(of: sortOrder) { _, order in
+            .onChange(of: sortOrder) { order in
                 app.filteredTracks.sort(using: order)
             }
-            .onChange(of: app.selectedTrackIDs) { _, _ in
+            .onChange(of: app.selectedTrackIDs) { _ in
                 app.loadTagsForSelection()
             }
             .contextMenu {

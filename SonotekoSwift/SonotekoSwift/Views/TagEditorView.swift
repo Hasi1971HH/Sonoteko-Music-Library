@@ -1,5 +1,6 @@
 import SwiftUI
 import AppKit
+import UniformTypeIdentifiers
 
 struct TagEditorView: View {
     @EnvironmentObject var app: AppState
@@ -96,9 +97,9 @@ struct TagEditorView: View {
         .frame(maxWidth: .infinity)
         .contentShape(Rectangle())
         .onTapGesture { pickCoverArt() }
-        .onDrop(of: [.image], isTargeted: nil) { providers in
-            providers.first?.loadDataRepresentation(forTypeIdentifier: "public.image") { data, _ in
-                if let data { Task { @MainActor in
+        .onDrop(of: [UTType.image], isTargeted: nil) { providers in
+            providers.first?.loadDataRepresentation(forTypeIdentifier: UTType.image.identifier) { data, _ in
+                if let data = data { Task { @MainActor in
                     app.editingTags.coverData = data
                     app.tagsDirty = true
                 }}
@@ -109,7 +110,7 @@ struct TagEditorView: View {
 
     private func pickCoverArt() {
         let panel = NSOpenPanel()
-        panel.allowedContentTypes = [.jpeg, .png, .bmp]
+        panel.allowedContentTypes = [UTType.jpeg, UTType.png, UTType.bmp]
         panel.prompt = "Cover auswählen"
         guard panel.runModal() == .OK, let url = panel.url,
               let data = try? Data(contentsOf: url) else { return }
@@ -158,7 +159,7 @@ struct TagEditorView: View {
                 .font(.system(size: 12))
                 .frame(minHeight: 120)
                 .border(.separator)
-                .onChange(of: app.editingTags.lyrics) { _, _ in app.tagsDirty = true }
+                .onChange(of: app.editingTags.lyrics) { _ in app.tagsDirty = true }
         }
     }
 

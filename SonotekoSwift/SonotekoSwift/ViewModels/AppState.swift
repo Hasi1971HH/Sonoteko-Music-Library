@@ -1,6 +1,7 @@
 import Foundation
 import AppKit
 import Combine
+import UniformTypeIdentifiers
 
 @MainActor
 final class AppState: ObservableObject {
@@ -100,7 +101,7 @@ final class AppState: ObservableObject {
         panel.canChooseFiles = true
         panel.canChooseDirectories = false
         panel.allowsMultipleSelection = true
-        panel.allowedContentTypes = [.audio, .mp3, .mpeg4Audio]
+        panel.allowedContentTypes = [UTType.audio, UTType.mp3, UTType.mpeg4Audio]
         panel.prompt = "Hinzufügen"
         guard panel.runModal() == .OK else { return }
         Task { await importPaths(panel.urls.map { $0.path }) }

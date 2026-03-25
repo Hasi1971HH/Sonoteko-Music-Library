@@ -1,0 +1,75 @@
+name: Build SonotekoSwift DMG
+
+on:
+  push:
+    branches: [claude/macos-swift-app-Lf2Lm]
+    tags: ['v*']
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app
+
+      - name: Build
+        run: |
+          cd SonotekoSwift
+          xcodebuild \
+            -project SonotekoSwift.xcodeproj \
+            -scheme SonotekoSwift \
+            -configuration Release \
+            -derivedDataPath build \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_ALLOWED=NO \
+            ONLY_ACTIVE_ARCH=NO \
+            build
+
+      - name: Create DMG
+        run: |
+          APP="SonotekoSwift/build/Build/Products/Release/SonotekoSwift.app"
+          DMG="Sonoteko.dmg"
+          # Create a temporary folder
+          mkdir -p dmg_staging
+          cp -R "$APP" dmg_staging/
+          # Symlink to Applications
+          ln -s /Applications dmg_staging/Applications
+          # Build DMG
+          hdiutil create \
+            -volname "Sonoteko" \
+            -srcfolder dmg_staging \
+            -ov -format UDZO \
+            "$DMG"
+
+      - name: Upload DMG as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Sonoteko-macOS
+          path: Sonoteko.dmg
+          retention-days: 90
+
+      - name: Create GitHub Release (on tag)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: Sonoteko.dmg
+          body: |
+            ## Sonoteko für macOS
+
+            ### Installation
+            1. `Sonoteko.dmg` herunterladen
+            2. DMG öffnen → App in den Programme-Ordner ziehen
+            3. **Erster Start**: Rechtsklick auf die App → „Öffnen“ → „Öffnen“ bestätigen
+               (macOS-Sicherheitsmeldung, weil die App nicht signiert ist — einmalig)
+            4. Ab jetzt normal per Doppelklick starten
+
+            ### Voraussetzungen
+            - macOS 13 (Ventura) oder neuer
+            - ffmpeg für ReplayGain und M4A-Tags: `brew install ffmpeg`
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

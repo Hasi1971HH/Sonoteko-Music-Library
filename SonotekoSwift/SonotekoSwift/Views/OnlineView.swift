@@ -117,7 +117,7 @@ struct OnlineView: View {
                     HStack {
                         Spacer()
                         if let idx = selectedTrackIdx {
-                            Button("Track \u00fcbernehmen") { app.applyMBRelease(rel, trackIndex: idx) }
+                            Button("Track übernehmen") { app.applyMBRelease(rel, trackIndex: idx) }
                                 .buttonStyle(.borderedProminent)
                         } else {
                             Button("Album übernehmen") { app.applyMBRelease(rel) }
